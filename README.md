@@ -2,6 +2,9 @@
   Proffy
 </h1>
 
+## :iphone: Web preview
+![](https://github.com/ellismarjr/proffy/blob/master/images-preview/proffy-preview.gif)
+
 <h4 align="center">
   API build with NodeJS, ReactJS and React Native using Typescript
 </h4>
