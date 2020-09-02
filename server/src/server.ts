@@ -1,11 +1,10 @@
 import express from 'express';
+import routes from './routes';
 
 const app = express();
 
 app.use(express.json());
 
-app.get('/users', (request, response) => {
-  response.json({message: 'Acessou a rota'})
-})
+app.use(routes);
 
 app.listen(3333);
