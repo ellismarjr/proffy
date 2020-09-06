@@ -27,6 +27,10 @@ const Landing: React.FC = () => {
     navigate('GiveClasses');
   }
 
+  function handleNavigateToStudyPages() {
+    navigate('Study');
+  }
+
   return (
     <Container>
       <LandingImg source={landing} resizeMode="contain" />
@@ -36,7 +40,7 @@ const Landing: React.FC = () => {
       </Title>
 
       <ButtonsContainer>
-        <ButtonStudy>
+        <ButtonStudy onPress={handleNavigateToStudyPages}>
           <Image source={studyIcon} />
           <ButtonText>Estudar</ButtonText>
         </ButtonStudy>
