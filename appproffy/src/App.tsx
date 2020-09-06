@@ -1,12 +1,14 @@
-import React from 'react';
-import { View, StatusBar } from 'react-native';
+import 'react-native-gesture-handler';
 
-import Landing from './pages/Landing';
+import React from 'react';
+import { StatusBar } from 'react-native';
+
+import AppStack from './routes/AppStack';
 
 const App: React.FC = () => {
   return (
     <>
-      <Landing />
+      <AppStack />
       <StatusBar barStyle="light-content" backgroundColor="#8257e5" />
     </>
   );
