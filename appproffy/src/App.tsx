@@ -1,8 +1,15 @@
 import React from 'react';
-import {Text} from 'react-native';
+import { View, StatusBar } from 'react-native';
+
+import Landing from './pages/Landing';
 
 const App: React.FC = () => {
-  return <Text>App</Text>;
+  return (
+    <>
+      <Landing />
+      <StatusBar barStyle="light-content" backgroundColor="#8257e5" />
+    </>
+  );
 };
 
 export default App;
