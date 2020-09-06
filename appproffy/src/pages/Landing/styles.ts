@@ -60,5 +60,5 @@ export const TotalConnections = styled.Text`
   font-size: 12px;
   line-height: 20px;
   max-width: 140px;
-  margin-top: 40px;
+  margin-top: 30px;
 `;
