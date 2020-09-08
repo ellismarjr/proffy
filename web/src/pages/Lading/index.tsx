@@ -18,11 +18,7 @@ function Landing() {
           <h2>Sua plataforma de estudos online</h2>
         </div>
 
-        <img
-          src={landingImg}
-          alt="HeroImage"
-          className="hero-image"
-        />
+        <img src={landingImg} alt="HeroImage" className="hero-image" />
 
         <div className="buttons-containers">
           <Link to="/study" className="study">
@@ -36,12 +32,12 @@ function Landing() {
         </div>
 
         <span className="total-connections">
-          Total de 200 conexões já realizadas <img src={purpleHeartIcon} alt="Coração roxo" />
+          Total de 200 conexões já realizadas{' '}
+          <img src={purpleHeartIcon} alt="Coração roxo" />
         </span>
-
       </div>
     </div>
-  )
+  );
 }
 
 export default Landing;

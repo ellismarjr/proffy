@@ -1,5 +1,5 @@
-import React from 'react';
-import { Image } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Linking } from 'react-native';
 
 import heartOutlineIcon from '../../assets/images/icons/heart-outline.png';
 import unfavoriteIcon from '../../assets/images/icons/unfavorite.png';
@@ -21,42 +21,85 @@ import {
   ContactButton,
   ContactText,
 } from './styles';
+import AsyncStorage from '@react-native-community/async-storage';
 
 interface FavoritedProps {
   favorited: boolean;
 }
 
-const TeacherItem: React.FC = () => {
-  const favorited: boolean = false;
+export interface Teacher {
+  id: number;
+  avatar: string;
+  bio: string;
+  cost: number;
+  name: string;
+  subject: string;
+  whatsapp: string;
+}
+
+interface TeacherItemProps {
+  teacher: Teacher;
+  favorited: boolean;
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher, favorited }) => {
+  const [isFavorited, setIsFavorited] = useState(favorited);
+
+  function handleLinkToWhatspp() {
+    Linking.openURL(`whatsapp://send?phone=${teacher.whatsapp}`);
+  }
+
+  async function handleToggleFavorites() {
+    const favorites = await AsyncStorage.getItem('favorites');
+
+    let favoritesArray = [];
+    if (favorites) {
+      favoritesArray = JSON.parse(favorites);
+    }
+
+    if (isFavorited) {
+      const favoriteIndex = favoritesArray.findIndex(
+        (teacherItem: Teacher) => teacherItem.id === teacher.id
+      );
+
+      favoritesArray.splice(favoriteIndex, 1);
+      setIsFavorited(false);
+    } else {
+      favoritesArray.push(teacher);
+      setIsFavorited(true);
+    }
+    await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
+  }
 
   return (
     <Container>
       <Profile>
-        <Avatar source={{ uri: 'https://github.com/ellismarjr.png' }} />
+        <Avatar source={{ uri: teacher.avatar }} />
         <ProfileInfo>
-          <Name>Júnior de Oliveira</Name>
-          <Subject>Química</Subject>
+          <Name>{teacher.name}</Name>
+          <Subject>{teacher.subject}</Subject>
         </ProfileInfo>
       </Profile>
-      <Bio>
-        Entusiasta das melhores tecnologia de química avançada;
-        {'\n'}
-        {'\n'}
-        Apaixonado por explodir coisas em laboratório e por mudar a vida das
-        pessoa através de experiências.
-      </Bio>
+      <Bio>{teacher.bio}</Bio>
 
       <Footer>
         <Price>
           Preço/hora {'   '}
-          <PriceValue>R$ 20,00</PriceValue>
+          <PriceValue>R$ {teacher.cost}</PriceValue>
         </Price>
         <ButtonsContainer>
-          <FavoriteButton favorited={favorited}>
+          <FavoriteButton
+            onPress={handleToggleFavorites}
+            favorited={isFavorited}
+          >
+            {isFavorited ? (
+              <Image source={unfavoriteIcon} />
+            ) : (
+              <Image source={heartOutlineIcon} />
+            )}
             {/* <Image source={heartOutlineIcon} /> */}
-            <Image source={unfavoriteIcon} />
           </FavoriteButton>
-          <ContactButton>
+          <ContactButton onPress={handleLinkToWhatspp}>
             <Image source={whatsappIcon} />
             <ContactText>Entrar em contato</ContactText>
           </ContactButton>

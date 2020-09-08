@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
-
+import AsyncStorate from '@react-native-community/async-storage';
 import { Container } from './styles';
 import PageHeader from '../../components/PageHeader';
-import TeacherItem from '../../components/TeacherItem';
+import TeacherItem, { Teacher } from '../../components/TeacherItem';
+
+import api from '../../services/api';
 
 import {
   TeachersList,
@@ -15,14 +17,44 @@ import {
   SubmitButton,
   SubmitButtonText,
 } from './styles';
-import { Text } from 'react-native';
 import { BorderlessButton } from 'react-native-gesture-handler';
 
 const TeacherList: React.FC = () => {
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
+  const [teachers, setTeachers] = useState([]);
+  const [favorites, setFavorites] = useState<number[]>([]);
+  const [subject, setSubject] = useState('');
+  const [week_day, setSWeekDay] = useState('');
+  const [time, setTime] = useState('');
+
+  function loadFavorites() {
+    AsyncStorate.getItem('favorites').then((response) => {
+      if (response) {
+        const favoritedTeachers = JSON.parse(response);
+        const favoritedTeachersIds = favoritedTeachers.map(
+          (teacher: Teacher) => teacher.id
+        );
+        setFavorites(favoritedTeachersIds);
+      }
+    });
+  }
+
   function handleToogleFiltersVisible() {
     setIsFiltersVisible((prevState) => !prevState);
+  }
+
+  async function handleFiltresSubmit() {
+    loadFavorites();
+    const response = await api.get('classes', {
+      params: {
+        subject,
+        week_day,
+        time,
+      },
+    });
+    setIsFiltersVisible(false);
+    setTeachers(response.data);
   }
 
   return (
@@ -38,18 +70,30 @@ const TeacherList: React.FC = () => {
         {isFiltersVisible && (
           <SearchForm>
             <Label>Matéria</Label>
-            <Input placeholder="Qual a matéria" />
+            <Input
+              value={subject}
+              onChangeText={(text) => setSubject(text)}
+              placeholder="Qual a matéria"
+            />
             <InputGroup>
               <InputBlock>
                 <Label>Dia da semana</Label>
-                <Input placeholder="Qual o dia?"></Input>
+                <Input
+                  value={week_day}
+                  onChangeText={(text) => setSWeekDay(text)}
+                  placeholder="Qual o dia?"
+                ></Input>
               </InputBlock>
               <InputBlock>
                 <Label>Horário</Label>
-                <Input placeholder="Qual horário?"></Input>
+                <Input
+                  value={time}
+                  onChangeText={(text) => setTime(text)}
+                  placeholder="Qual horário?"
+                ></Input>
               </InputBlock>
             </InputGroup>
-            <SubmitButton>
+            <SubmitButton onPress={handleFiltresSubmit}>
               <SubmitButtonText>Filtrar</SubmitButtonText>
             </SubmitButton>
           </SearchForm>
@@ -61,13 +105,13 @@ const TeacherList: React.FC = () => {
           paddingBottom: 16,
         }}
       >
-        <TeacherItem />
-        <TeacherItem />
-        <TeacherItem />
-        <TeacherItem />
-        <TeacherItem />
-        <TeacherItem />
-        <TeacherItem />
+        {teachers.map((teacher: Teacher) => (
+          <TeacherItem
+            key={teacher.id}
+            teacher={teacher}
+            favorited={favorites.includes(teacher.id)}
+          />
+        ))}
       </TeachersList>
     </Container>
   );
