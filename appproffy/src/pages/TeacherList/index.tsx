@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
-import AsyncStorate from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Container } from './styles';
 import PageHeader from '../../components/PageHeader';
 import TeacherItem, { Teacher } from '../../components/TeacherItem';
@@ -29,7 +29,7 @@ const TeacherList: React.FC = () => {
   const [time, setTime] = useState('');
 
   function loadFavorites() {
-    AsyncStorate.getItem('favorites').then((response) => {
+    AsyncStorage.getItem('favorites').then((response) => {
       if (response) {
         const favoritedTeachers = JSON.parse(response);
         const favoritedTeachersIds = favoritedTeachers.map(

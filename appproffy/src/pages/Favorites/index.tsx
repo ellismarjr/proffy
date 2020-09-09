@@ -1,12 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 import PageHeader from '../../components/PageHeader';
 
-import TeacherItem from '../../components/TeacherItem';
+import TeacherItem, { Teacher } from '../../components/TeacherItem';
 
 import { Container, TeachersList } from './styles';
 
 const Favorites: React.FC = () => {
+  const [favorites, setFavorites] = useState([]);
+  function loadFavorites() {
+    AsyncStorage.getItem('favorites').then((response) => {
+      if (response) {
+        const favoritedTeachers = JSON.parse(response);
+
+        setFavorites(favoritedTeachers);
+      }
+    });
+  }
+
+  useFocusEffect(() => {
+    loadFavorites();
+  });
+
   return (
     <Container>
       <PageHeader title="Meus profffys favoritos" />
@@ -16,13 +33,9 @@ const Favorites: React.FC = () => {
           paddingBottom: 16,
         }}
       >
-        <TeacherItem />
-        <TeacherItem />
-        <TeacherItem />
-        <TeacherItem />
-        <TeacherItem />
-        <TeacherItem />
-        <TeacherItem />
+        {favorites.map((teacher: Teacher) => (
+          <TeacherItem key={teacher.id} teacher={teacher} favorited />
+        ))}
       </TeachersList>
     </Container>
   );
